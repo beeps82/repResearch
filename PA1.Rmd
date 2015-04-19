@@ -1,47 +1,53 @@
 ---
 title:"Peer Assesment Project1: Reproducible Research"
-author: "Binu Enchakalody"
-date: "Saturday, February 14, 2015"
+date: "Saturday, April 19, 2015"
 output: html_document
 ---
 
 
-##Loading and Preprocessing the data
+## Loading and Preprocessing the data
 The reported data activity (.csv) file data is copied into R for further data analysis. The data has a lot of NA values which are ignored for this part of the analysis. The sum of the number of steps per date is calculated. 
 
 ```{r}
 data <- read.csv('C:/Users/Binu/Documents/repdata-data-activity/activity.csv');
 data$steps <- as.numeric(data$steps);
 data$interval <- as.numeric(data$interval);
-```
-## What is mean total number of steps taken per day?
 
-####A histogram of the total number of steps per date is shown below
+```
+## What is the mean number of steps taken per day?
+
+#### A histogram of the total number of steps per date is shown below
 
 ```{r}
 aggdata <-aggregate(data$steps,list(date = data$date), FUN="sum", na.rm=TRUE);
 hist(aggdata$x,breaks = 15,main = "Histogram of the total number of steps taken each date",xlab = 'Number of steps');
+
 ```
 
-####Reporting the average number of the total number of steps per date.
+#### Average number of the total number of steps per date.
 
 ```{r, echo = TRUE}
-avgData <-aggregate(data$steps,list(date = data$date), FUN="mean", na.rm=TRUE);
+avgData <-mean(data$steps[!is.na(data$steps)]);
+
 ```
 ```{r, echo = FALSE}
 print(avgData)
+
 ```
 
-####Reporting the median number of the total number of steps per date
+#### Reporting the median number of the total number of steps per date
 
 ```{r, echo = TRUE}
-medData <-aggregate(data$steps,list(date = data$date), FUN="median", na.rm=TRUE)
-```
-```{r, echo = FALSE}
-print(medData)
+medData <-median(data$steps[!is.na(data$steps)])
+
 ```
 
-##What is the average daily activity pattern?
+```{r, echo = FALSE}
+print(medData)
+
+```
+
+## What is the average daily activity pattern?
 
 ```{r, echo=FALSE}
 library(lattice)
@@ -49,7 +55,7 @@ avgDailyPattern <- aggregate(data$steps,list(interval = data$interval), FUN = me
 
 ```
 
-####Time series plot of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)
+#### Time series plot of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)
 
 ```{r}
 xyplot(avgDailyPattern$x ~avgDailyPattern$interval,avgDailyPattern,type ="l",xlab = "5-minute interval",ylab = "Avg number of steps(all days)")
@@ -96,20 +102,21 @@ avgImpData <-aggregate(imputedData$steps,list(date = imputedData$date), FUN="mea
 ````
 
 
-####Around 2304 new columns now have a value. There is a noticeable increase in the frequency of number of steps between 8000 and 12000
+#### 2304 step values were imputed. There is a noticeable increase in the frequency of number of steps between 8000 and 12000
 
-#### Reporting the mean total number of steps taken per day are recalculated using the imputed data. 
-
+#### Mean number of steps taken per day using the imputed data. 
+```{r}
+avgImpData <-mean(imputedData$steps)
+````
 ````{r, echo =FALSE}
 print(avgImpData)
 ```
 
+#### Median number of steps taken per day using the imputed data. 
 
 ```{r}
-medImpData <-aggregate(imputedData$steps,list(date = imputedData$date), FUN="median", na.rm=TRUE);
+medImpData <-median(imputedData$steps)
 ````
-
-#### Reporting the median total number of steps taken per day are recalculated using the imputed data. 
 
 ````{r, echo =FALSE}
 print(medImpData)
